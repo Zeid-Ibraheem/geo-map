@@ -1,13 +1,14 @@
-// Panneau de couches (en haut à gauche) et légende (en bas à gauche).
+// Panneau de couches (en haut à gauche).
 // Ne connaît pas MapLibre : il appelle seulement les fonctions qu'on lui donne.
 
-import { escapeHtml, formatValue } from "./format.js";
-import { swatchColor } from "./styles.js";
+import { swatchHtml } from "./legend.js";
+import { legendEntries } from "./styles.js";
 
 function el(tag, attrs = {}, ...children) {
   const node = document.createElement(tag);
   for (const [k, v] of Object.entries(attrs)) {
     if (k === "class") node.className = v;
+    else if (k === "html") node.innerHTML = v;
     else if (k.startsWith("on")) node.addEventListener(k.slice(2), v);
     else if (v === true) node.setAttribute(k, "");
     else if (v !== false && v != null) node.setAttribute(k, v);
@@ -22,8 +23,18 @@ function radio(name, value, label, checked, onChange, disabled = false) {
     el("span", {}, label));
 }
 
-function section(title, ...content) {
-  return el("details", { class: "section", open: true }, el("summary", {}, title), ...content);
+function section(title, open, ...content) {
+  return el("details", { class: "section", open }, el("summary", {}, title), ...content);
+}
+
+function groupBy(items) {
+  const groups = new Map();
+  for (const item of items) {
+    const g = item.group ?? "Autres";
+    if (!groups.has(g)) groups.set(g, []);
+    groups.get(g).push(item);
+  }
+  return groups;
 }
 
 /**
@@ -34,58 +45,36 @@ function section(title, ...content) {
  */
 export function buildPanel(root, catalog, stats, actions) {
   const body = el("div", { class: "panel-body" });
-  const toggle = el("button", { class: "panel-toggle", type: "button", "aria-expanded": "true", title: "Afficher / masquer" }, "Couches");
+  const toggle = el("button", { class: "panel-toggle", type: "button", "aria-expanded": "true" }, "Couches");
   toggle.addEventListener("click", () => {
     const hidden = body.toggleAttribute("hidden");
     toggle.setAttribute("aria-expanded", String(!hidden));
   });
 
-  body.append(section("Fond de carte",
+  body.append(section("Fond de carte", true,
     catalog.bases.map((b) => radio("base", b.id, b.title, !!b.default, () => actions.onBase(b.id)))));
 
-  body.append(section("Pays colorés par…",
-    radio("indicator", "", "Aucun", true, () => actions.onIndicator(null)),
-    catalog.indicators.map((ind) => {
+  const indicatorRows = [radio("indicator", "", "Aucun", true, () => actions.onIndicator(null))];
+  for (const [group, items] of groupBy(catalog.indicators)) {
+    indicatorRows.push(el("div", { class: "subhead" }, group));
+    for (const ind of items) {
       const missing = !stats[ind.id];
-      return radio("indicator", ind.id, ind.title + (missing ? " (pas de données)" : ""), false,
-        () => actions.onIndicator(ind.id), missing);
-    })));
-
-  const groups = new Map();
-  for (const ov of catalog.overlays) {
-    if (!groups.has(ov.group)) groups.set(ov.group, []);
-    groups.get(ov.group).push(ov);
+      indicatorRows.push(radio("indicator", ind.id, ind.title + (missing ? " (pas de données)" : ""), false,
+        () => actions.onIndicator(ind.id), missing));
+    }
   }
-  for (const [group, items] of groups) {
-    body.append(section(group, items.map((ov) => {
-      const row = el("label", { class: "row" },
+  body.append(section("Pays colorés par…", false, indicatorRows));
+
+  for (const [group, items] of groupBy(catalog.overlays)) {
+    const open = items.some((ov) => ov.visible);
+    body.append(section(group, open, items.map((ov) => {
+      const sample = legendEntries(ov)[0];
+      return el("label", { class: "row", title: ov.note ?? "" },
         el("input", { type: "checkbox", checked: !!ov.visible, onchange: (e) => actions.onOverlay(ov.id, e.target.checked) }),
-        el("span", { class: `swatch swatch-${ov.style.type}`, style: `--c:${swatchColor(ov.style)}` }),
+        el("span", { class: "swatch-box", html: swatchHtml(sample) }),
         el("span", {}, ov.title));
-      if (!ov.legend || typeof ov.style.color === "string") return row;
-      const sub = el("div", { class: "sublegend" },
-        Object.entries(ov.legend).map(([value, label]) =>
-          el("span", {}, el("span", { class: "swatch swatch-circle", style: `--c:${ov.style.color.values[value] ?? ov.style.color.default}` }), label)));
-      return el("div", {}, row, sub);
     })));
   }
 
   root.replaceChildren(toggle, body);
-}
-
-/** Légende de l'indicateur actif. `scale` vient de buildScale(). */
-export function renderLegend(root, indicator, scale, noDataColor) {
-  if (!indicator || !scale) {
-    root.hidden = true;
-    return;
-  }
-  const fmt = (v) => formatValue(v, indicator.format, indicator.unit);
-  const years = scale.years ? (scale.years[0] === scale.years[1] ? `${scale.years[0]}` : `${scale.years[0]}–${scale.years[1]}`) : "?";
-  root.innerHTML = `
-    <div class="legend-title">${escapeHtml(indicator.title)}</div>
-    ${scale.ranges.map((r) => `
-      <div class="legend-row"><span class="swatch swatch-fill" style="--c:${r.color}"></span>${escapeHtml(fmt(r.from))} → ${escapeHtml(fmt(r.to))}</div>`).join("")}
-    <div class="legend-row"><span class="swatch swatch-fill" style="--c:${noDataColor}"></span>Pas de donnée</div>
-    <div class="legend-note">${scale.count} pays · données ${escapeHtml(years)} · ${escapeHtml(indicator.attribution)}</div>`;
-  root.hidden = false;
 }

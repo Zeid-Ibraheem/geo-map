@@ -1,58 +1,325 @@
 {
   "map": {
     "maplibre_version": "5.24.0",
-    "center": [20, 25],
-    "zoom": 1.6,
+    "center": [
+      20,
+      30
+    ],
+    "zoom": 1.8,
+    "max_zoom": 19,
     "projection": "globe",
-    "glyphs": "https://demotiles.maplibre.org/font/{fontstack}/{range}.pbf",
-    "font": "Open Sans Semibold",
+    "vector_style": "https://tiles.openfreemap.org/styles/dark",
+    "fallback_glyphs": "https://demotiles.maplibre.org/font/{fontstack}/{range}.pbf",
+    "fallback_font": "Open Sans Semibold",
     "colors": {
       "ocean": "#0b0d12",
       "land": "#1b1e26",
-      "border": "#4a4f5c",
-      "label": "#9aa0ad",
-      "no_data": "#2a2d35"
+      "border": "#c9ccd4",
+      "label": "#b8bdc9",
+      "no_data": "#3a3d46"
     },
-    "palette": ["#2b2140", "#4b2a5e", "#7a2f6b", "#ad3a63", "#d9584a", "#f08a3a", "#f9c74f"]
+    "choropleth_opacity": 0.72,
+    "palette": [
+      "#2b2140",
+      "#4b2a5e",
+      "#7a2f6b",
+      "#ad3a63",
+      "#d9584a",
+      "#f08a3a",
+      "#f9c74f"
+    ]
   },
-
   "countries": {
     "url": "https://raw.githubusercontent.com/nvkelso/natural-earth-vector/ca96624a56bd078437bca8184e78163e5039ad19/geojson/ne_50m_admin_0_countries.geojson",
-    "id_props": ["ISO_A3_EH", "ADM0_A3"],
-    "name_props": ["NAME_FR", "NAME"],
+    "id_props": [
+      "ISO_A3_EH",
+      "ADM0_A3"
+    ],
+    "name_props": [
+      "NAME_FR",
+      "NAME"
+    ],
     "precision": 3,
     "attribution": "Natural Earth"
   },
-
   "bases": [
-    { "id": "dark", "title": "Sombre", "default": true },
+    {
+      "id": "plan",
+      "title": "Plan détaillé (jusqu'aux villages)",
+      "default": true
+    },
+    {
+      "id": "satellite",
+      "title": "Satellite (Sentinel-2, 2024)",
+      "tiles": [
+        "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless-2024_3857/default/g/{z}/{y}/{x}.jpg"
+      ],
+      "maxzoom": 14,
+      "attribution": "<a href=\"https://s2maps.eu\">Sentinel-2 cloudless</a> by EOX IT Services GmbH (Contains modified Copernicus Sentinel data 2024)"
+    },
     {
       "id": "relief",
       "title": "Relief et fonds marins (NASA)",
-      "tiles": ["https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/BlueMarble_ShadedRelief_Bathymetry/default//GoogleMapsCompatible_Level8/{z}/{y}/{x}.jpeg"],
+      "tiles": [
+        "https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/BlueMarble_ShadedRelief_Bathymetry/default//GoogleMapsCompatible_Level8/{z}/{y}/{x}.jpeg"
+      ],
       "maxzoom": 8,
       "attribution": "NASA GIBS"
     },
     {
       "id": "night",
       "title": "Lumières nocturnes (NASA)",
-      "tiles": ["https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/VIIRS_Black_Marble/default/2016-01-01/GoogleMapsCompatible_Level8/{z}/{y}/{x}.png"],
+      "tiles": [
+        "https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/VIIRS_Black_Marble/default/2016-01-01/GoogleMapsCompatible_Level8/{z}/{y}/{x}.png"
+      ],
       "maxzoom": 8,
       "attribution": "NASA GIBS – Black Marble"
     }
   ],
-
   "indicators": [
-    { "id": "gdp", "title": "PIB", "provider": "worldbank", "code": "NY.GDP.MKTP.CD", "format": "compact", "unit": "$", "attribution": "Banque mondiale" },
-    { "id": "gdp_pc", "title": "PIB par habitant", "provider": "worldbank", "code": "NY.GDP.PCAP.CD", "format": "integer", "unit": "$", "attribution": "Banque mondiale" },
-    { "id": "density", "title": "Densité de population", "provider": "worldbank", "code": "EN.POP.DNST", "format": "integer", "unit": "hab./km²", "attribution": "Banque mondiale" },
-    { "id": "debt", "title": "Dette publique (% du PIB)", "provider": "imf", "code": "GGXWDG_NGDP", "format": "decimal", "unit": "%", "attribution": "FMI" },
-    { "id": "milex", "title": "Dépenses militaires (% du PIB)", "provider": "worldbank", "code": "MS.MIL.XPND.GD.ZS", "format": "decimal", "unit": "%", "attribution": "Banque mondiale / SIPRI" },
-    { "id": "troops", "title": "Effectifs militaires", "provider": "worldbank", "code": "MS.MIL.TOTL.P1", "format": "compact", "unit": "", "attribution": "Banque mondiale / IISS" },
-    { "id": "warheads", "title": "Têtes nucléaires (inventaire total)", "provider": "file", "path": "static-data/nuclear-warheads-sipri-2026.json", "field": "total_inventory", "format": "integer", "unit": "", "attribution": "SIPRI Yearbook 2026" },
-    { "id": "warheads_deployed", "title": "Têtes nucléaires déployées", "provider": "file", "path": "static-data/nuclear-warheads-sipri-2026.json", "field": "deployed", "format": "integer", "unit": "", "attribution": "SIPRI Yearbook 2026" }
+    {
+      "id": "gdp",
+      "title": "PIB",
+      "group": "Économie",
+      "provider": "worldbank",
+      "code": "NY.GDP.MKTP.CD",
+      "format": "compact",
+      "unit": "$",
+      "attribution": "Banque mondiale"
+    },
+    {
+      "id": "gdp_pc",
+      "title": "PIB par habitant",
+      "group": "Économie",
+      "provider": "worldbank",
+      "code": "NY.GDP.PCAP.CD",
+      "format": "integer",
+      "unit": "$",
+      "attribution": "Banque mondiale"
+    },
+    {
+      "id": "gdp_pc_ppp",
+      "title": "PIB par habitant (parité de pouvoir d'achat)",
+      "group": "Économie",
+      "provider": "imf",
+      "code": "PPPPC",
+      "format": "integer",
+      "unit": "$ PPA",
+      "attribution": "FMI"
+    },
+    {
+      "id": "growth",
+      "title": "Croissance du PIB",
+      "group": "Économie",
+      "provider": "worldbank",
+      "code": "NY.GDP.MKTP.KD.ZG",
+      "format": "decimal",
+      "unit": "%",
+      "attribution": "Banque mondiale"
+    },
+    {
+      "id": "inflation",
+      "title": "Inflation",
+      "group": "Économie",
+      "provider": "imf",
+      "code": "PCPIPCH",
+      "format": "decimal",
+      "unit": "%",
+      "attribution": "FMI"
+    },
+    {
+      "id": "unemployment",
+      "title": "Chômage",
+      "group": "Économie",
+      "provider": "imf",
+      "code": "LUR",
+      "format": "decimal",
+      "unit": "%",
+      "attribution": "FMI"
+    },
+    {
+      "id": "debt",
+      "title": "Dette publique (% du PIB)",
+      "group": "Économie",
+      "provider": "imf",
+      "code": "GGXWDG_NGDP",
+      "format": "decimal",
+      "unit": "%",
+      "attribution": "FMI"
+    },
+    {
+      "id": "current_account",
+      "title": "Balance courante (% du PIB)",
+      "group": "Économie",
+      "provider": "imf",
+      "code": "BCA_NGDPD",
+      "format": "decimal",
+      "unit": "%",
+      "attribution": "FMI"
+    },
+    {
+      "id": "milex",
+      "title": "Dépenses militaires (% du PIB)",
+      "group": "Armée",
+      "provider": "worldbank",
+      "code": "MS.MIL.XPND.GD.ZS",
+      "format": "decimal",
+      "unit": "%",
+      "attribution": "Banque mondiale / SIPRI"
+    },
+    {
+      "id": "milex_usd",
+      "title": "Dépenses militaires ($)",
+      "group": "Armée",
+      "provider": "worldbank",
+      "code": "MS.MIL.XPND.CD",
+      "format": "compact",
+      "unit": "$",
+      "attribution": "Banque mondiale / SIPRI"
+    },
+    {
+      "id": "troops",
+      "title": "Effectifs militaires",
+      "group": "Armée",
+      "provider": "worldbank",
+      "code": "MS.MIL.TOTL.P1",
+      "format": "compact",
+      "unit": "",
+      "attribution": "Banque mondiale / IISS"
+    },
+    {
+      "id": "arms_imports",
+      "title": "Importations d'armes (indice SIPRI)",
+      "group": "Armée",
+      "provider": "worldbank",
+      "code": "MS.MIL.MPRT.KD",
+      "format": "compact",
+      "unit": "",
+      "attribution": "Banque mondiale / SIPRI"
+    },
+    {
+      "id": "arms_exports",
+      "title": "Exportations d'armes (indice SIPRI)",
+      "group": "Armée",
+      "provider": "worldbank",
+      "code": "MS.MIL.XPRT.KD",
+      "format": "compact",
+      "unit": "",
+      "attribution": "Banque mondiale / SIPRI"
+    },
+    {
+      "id": "warheads",
+      "title": "Têtes nucléaires (inventaire total)",
+      "group": "Armée",
+      "provider": "file",
+      "path": "static-data/nuclear-warheads-sipri-2026.json",
+      "field": "total_inventory",
+      "format": "integer",
+      "unit": "",
+      "attribution": "SIPRI Yearbook 2026"
+    },
+    {
+      "id": "warheads_deployed",
+      "title": "Têtes nucléaires déployées",
+      "group": "Armée",
+      "provider": "file",
+      "path": "static-data/nuclear-warheads-sipri-2026.json",
+      "field": "deployed",
+      "format": "integer",
+      "unit": "",
+      "attribution": "SIPRI Yearbook 2026"
+    },
+    {
+      "id": "oil_rents",
+      "title": "Rente pétrolière (% du PIB)",
+      "group": "Énergie",
+      "provider": "worldbank",
+      "code": "NY.GDP.PETR.RT.ZS",
+      "format": "decimal",
+      "unit": "%",
+      "attribution": "Banque mondiale"
+    },
+    {
+      "id": "gas_rents",
+      "title": "Rente gazière (% du PIB)",
+      "group": "Énergie",
+      "provider": "worldbank",
+      "code": "NY.GDP.NGAS.RT.ZS",
+      "format": "decimal",
+      "unit": "%",
+      "attribution": "Banque mondiale"
+    },
+    {
+      "id": "fuel_exports",
+      "title": "Carburants (% des exportations)",
+      "group": "Énergie",
+      "provider": "worldbank",
+      "code": "TX.VAL.FUEL.ZS.UN",
+      "format": "decimal",
+      "unit": "%",
+      "attribution": "Banque mondiale"
+    },
+    {
+      "id": "energy_imports",
+      "title": "Énergie importée (% de la consommation)",
+      "group": "Énergie",
+      "provider": "worldbank",
+      "code": "EG.IMP.CONS.ZS",
+      "format": "decimal",
+      "unit": "%",
+      "attribution": "Banque mondiale"
+    },
+    {
+      "id": "population",
+      "title": "Population",
+      "group": "Société",
+      "provider": "worldbank",
+      "code": "SP.POP.TOTL",
+      "format": "compact",
+      "unit": "",
+      "attribution": "Banque mondiale"
+    },
+    {
+      "id": "density",
+      "title": "Densité de population",
+      "group": "Société",
+      "provider": "worldbank",
+      "code": "EN.POP.DNST",
+      "format": "integer",
+      "unit": "hab./km²",
+      "attribution": "Banque mondiale"
+    },
+    {
+      "id": "life",
+      "title": "Espérance de vie",
+      "group": "Société",
+      "provider": "worldbank",
+      "code": "SP.DYN.LE00.IN",
+      "format": "decimal",
+      "unit": "ans",
+      "attribution": "Banque mondiale"
+    },
+    {
+      "id": "internet",
+      "title": "Accès à Internet (% de la population)",
+      "group": "Société",
+      "provider": "worldbank",
+      "code": "IT.NET.USER.ZS",
+      "format": "decimal",
+      "unit": "%",
+      "attribution": "Banque mondiale"
+    },
+    {
+      "id": "refugees",
+      "title": "Réfugiés originaires du pays",
+      "group": "Société",
+      "provider": "worldbank",
+      "code": "SM.POP.REFG.OR",
+      "format": "compact",
+      "unit": "",
+      "attribution": "Banque mondiale"
+    }
   ],
-
   "overlays": [
     {
       "id": "capitals",
@@ -60,11 +327,40 @@
       "group": "Pays",
       "source": {
         "url": "https://raw.githubusercontent.com/nvkelso/natural-earth-vector/ca96624a56bd078437bca8184e78163e5039ad19/geojson/ne_10m_populated_places_simple.geojson",
-        "keep": { "featurecla": ["Admin-0 capital", "Admin-0 capital alt"] },
-        "props": ["name", "adm0name", "pop_max"]
+        "filters": [
+          {
+            "prop": "featurecla",
+            "in": [
+              "Admin-0 capital",
+              "Admin-0 capital alt"
+            ]
+          }
+        ],
+        "props": [
+          "name",
+          "adm0name",
+          "pop_max"
+        ]
       },
-      "style": { "type": "circle", "color": "#f9c74f", "radius": 3.5 },
-      "popup": { "title": "name", "fields": [{ "label": "Pays", "prop": "adm0name" }, { "label": "Population (agglo.)", "prop": "pop_max", "format": "integer" }] },
+      "style": {
+        "type": "icon",
+        "icon": "star",
+        "color": "#ffd166"
+      },
+      "popup": {
+        "title": "name",
+        "fields": [
+          {
+            "label": "Pays",
+            "prop": "adm0name"
+          },
+          {
+            "label": "Population (agglomération)",
+            "prop": "pop_max",
+            "format": "integer"
+          }
+        ]
+      },
       "attribution": "Natural Earth",
       "visible": true
     },
@@ -74,11 +370,76 @@
       "group": "Pays",
       "source": {
         "url": "https://raw.githubusercontent.com/nvkelso/natural-earth-vector/ca96624a56bd078437bca8184e78163e5039ad19/geojson/ne_10m_admin_0_disputed_areas.geojson",
-        "props": ["BRK_NAME", "NAME_FR", "NOTE_BRK", "TYPE"],
+        "props": [
+          "NAME_FR",
+          "NOTE_BRK",
+          "TYPE"
+        ],
         "precision": 3
       },
-      "style": { "type": "fill", "color": "#e63946", "opacity": 0.35, "outline": "#ff6b6b" },
-      "popup": { "title": "NAME_FR", "fields": [{ "label": "Statut", "prop": "NOTE_BRK" }, { "label": "Type", "prop": "TYPE" }] },
+      "style": {
+        "type": "fill",
+        "color": "#ef233c",
+        "opacity": 0.45,
+        "outline": "#ff6b6b"
+      },
+      "popup": {
+        "title": "NAME_FR",
+        "fields": [
+          {
+            "label": "Statut",
+            "prop": "NOTE_BRK"
+          },
+          {
+            "label": "Type",
+            "prop": "TYPE"
+          }
+        ]
+      },
+      "attribution": "Natural Earth"
+    },
+    {
+      "id": "regions",
+      "title": "Régions et États fédérés",
+      "group": "Pays",
+      "source": {
+        "url": "https://raw.githubusercontent.com/nvkelso/natural-earth-vector/ca96624a56bd078437bca8184e78163e5039ad19/geojson/ne_50m_admin_1_states_provinces_lines.geojson",
+        "props": [
+          "adm0_name"
+        ],
+        "precision": 3
+      },
+      "style": {
+        "type": "line",
+        "color": "#8d99ae",
+        "width": 0.8,
+        "dash": [
+          3,
+          2
+        ]
+      },
+      "popup": null,
+      "attribution": "Natural Earth"
+    },
+    {
+      "id": "urban",
+      "title": "Zones urbaines",
+      "group": "Pays",
+      "source": {
+        "url": "https://raw.githubusercontent.com/nvkelso/natural-earth-vector/ca96624a56bd078437bca8184e78163e5039ad19/geojson/ne_50m_urban_areas.geojson",
+        "props": [
+          "area_sqkm"
+        ],
+        "precision": 3
+      },
+      "style": {
+        "type": "fill",
+        "color": "#ffbe0b",
+        "opacity": 0.35,
+        "outline": "#ffbe0b",
+        "outline_width": 0.5
+      },
+      "popup": null,
       "attribution": "Natural Earth"
     },
     {
@@ -87,104 +448,199 @@
       "group": "Pays",
       "source": {
         "url": "https://raw.githubusercontent.com/nvkelso/natural-earth-vector/ca96624a56bd078437bca8184e78163e5039ad19/geojson/ne_10m_time_zones.geojson",
-        "props": ["time_zone", "places"],
+        "props": [
+          "time_zone",
+          "places"
+        ],
         "precision": 3,
         "simplify": 0.01
       },
-      "style": { "type": "line", "color": "#6c757d", "width": 0.8, "dash": [2, 2] },
-      "popup": { "title": "time_zone", "fields": [{ "label": "Lieux", "prop": "places" }] },
-      "attribution": "Natural Earth"
-    },
-
-    {
-      "id": "plates",
-      "title": "Plaques tectoniques",
-      "group": "Géographie",
-      "source": {
-        "url": "https://raw.githubusercontent.com/fraxen/tectonicplates/339b0c56563c118307b1f4542703047f5f698fae/GeoJSON/PB2002_boundaries.json",
-        "props": ["Name", "Type"],
-        "precision": 3
-      },
-      "style": { "type": "line", "color": "#ff8c42", "width": 1.2 },
-      "popup": { "title": "Name", "fields": [] },
-      "attribution": "PB2002 (Bird 2003) via fraxen/tectonicplates"
-    },
-    {
-      "id": "rivers",
-      "title": "Grands fleuves",
-      "group": "Géographie",
-      "source": {
-        "url": "https://raw.githubusercontent.com/nvkelso/natural-earth-vector/ca96624a56bd078437bca8184e78163e5039ad19/geojson/ne_50m_rivers_lake_centerlines.geojson",
-        "props": ["name"],
-        "precision": 3
-      },
-      "style": { "type": "line", "color": "#4ea8de", "width": 1 },
-      "popup": { "title": "name", "fields": [] },
-      "attribution": "Natural Earth"
-    },
-
-    {
-      "id": "nuclear_plants",
-      "title": "Centrales nucléaires",
-      "group": "Énergie",
-      "source": {
-        "url": "https://raw.githubusercontent.com/cristianst85/GeoNuclearData/1bc8b4ac106af236902385b87e46c540b4864815/data/json/denormalized/nuclear_power_plants.json",
-        "format": "json-points",
-        "lat": "Latitude",
-        "lon": "Longitude",
-        "keep": { "Status": ["Operational", "Under Construction", "Suspended Operation"] },
-        "props": ["Name", "Country", "Status", "ReactorType", "Capacity", "OperationalFrom"]
-      },
       "style": {
-        "type": "circle",
-        "color": { "by": "Status", "values": { "Operational": "#80ed99", "Under Construction": "#f9c74f", "Suspended Operation": "#adb5bd" }, "default": "#adb5bd" },
-        "radius": 4
-      },
-      "popup": {
-        "title": "Name",
-        "fields": [
-          { "label": "Pays", "prop": "Country" },
-          { "label": "Statut", "prop": "Status" },
-          { "label": "Type de réacteur", "prop": "ReactorType" },
-          { "label": "Puissance (MW)", "prop": "Capacity", "format": "integer" },
-          { "label": "En service depuis", "prop": "OperationalFrom" }
+        "type": "line",
+        "color": "#b5838d",
+        "width": 0.9,
+        "dash": [
+          1,
+          2
         ]
       },
-      "legend": { "Operational": "En service", "Under Construction": "En construction", "Suspended Operation": "Suspendue" },
-      "attribution": "GeoNuclearData (WNA/IAEA, mise à jour 2024)"
+      "popup": {
+        "title": "time_zone",
+        "fields": [
+          {
+            "label": "Lieux",
+            "prop": "places"
+          }
+        ]
+      },
+      "attribution": "Natural Earth"
     },
-
     {
-      "id": "airports",
-      "title": "Aéroports (militaires en rouge)",
-      "group": "Transports",
+      "id": "chokepoints",
+      "title": "Points de passage stratégiques",
+      "group": "Mers et océans",
       "source": {
-        "url": "https://raw.githubusercontent.com/nvkelso/natural-earth-vector/ca96624a56bd078437bca8184e78163e5039ad19/geojson/ne_10m_airports.geojson",
-        "props": ["name", "type", "iata_code"]
+        "path": "static-data/chokepoints.geojson"
       },
       "style": {
-        "type": "circle",
-        "color": {
-          "by": "type",
-          "values": { "mid and military": "#e63946", "major and military": "#e63946", "military mid": "#e63946", "military major": "#e63946", "military": "#e63946", "spaceport": "#c77dff" },
-          "default": "#90e0ef"
-        },
-        "radius": 3
+        "type": "icon",
+        "icon": "diamond",
+        "color": "#ffffff",
+        "size": 1.1
       },
-      "popup": { "title": "name", "fields": [{ "label": "Type", "prop": "type" }, { "label": "Code IATA", "prop": "iata_code" }] },
+      "popup": {
+        "title": "name",
+        "fields": [
+          {
+            "label": "Relie",
+            "prop": "relie"
+          },
+          {
+            "label": "Liste",
+            "prop": "liste"
+          }
+        ]
+      },
+      "attribution": "EIA (liste)",
+      "note": "Les 8 passages pétroliers de l'EIA + Gibraltar et Taïwan",
+      "visible": true
+    },
+    {
+      "id": "maritime",
+      "title": "Frontières maritimes",
+      "group": "Mers et océans",
+      "source": {
+        "url": "https://raw.githubusercontent.com/nvkelso/natural-earth-vector/ca96624a56bd078437bca8184e78163e5039ad19/geojson/ne_10m_admin_0_boundary_lines_maritime_indicator.geojson",
+        "props": [
+          "name"
+        ],
+        "precision": 3
+      },
+      "style": {
+        "type": "line",
+        "color": "#4361ee",
+        "width": 1.2,
+        "dash": [
+          4,
+          2
+        ]
+      },
+      "popup": null,
       "attribution": "Natural Earth"
+    },
+    {
+      "id": "eez",
+      "title": "Zones économiques exclusives (ZEE)",
+      "group": "Mers et océans",
+      "source": {
+        "url": "https://geo.vliz.be/geoserver/MarineRegions/wfs?service=WFS&version=1.0.0&request=GetFeature&typeName=MarineRegions:eez_boundaries&outputFormat=application/json",
+        "precision": 3,
+        "simplify": 0.01
+      },
+      "style": {
+        "type": "line",
+        "color": "#00f5d4",
+        "width": 1
+      },
+      "popup": "auto",
+      "attribution": "Marine Regions (CC BY 4.0)"
     },
     {
       "id": "ports",
       "title": "Ports",
-      "group": "Transports",
+      "group": "Mers et océans",
       "source": {
         "url": "https://raw.githubusercontent.com/nvkelso/natural-earth-vector/ca96624a56bd078437bca8184e78163e5039ad19/geojson/ne_10m_ports.geojson",
-        "props": ["name"]
+        "props": [
+          "name"
+        ]
       },
-      "style": { "type": "circle", "color": "#48cae4", "radius": 2.5 },
-      "popup": { "title": "name", "fields": [] },
+      "style": {
+        "type": "icon",
+        "icon": "ship",
+        "color": "#4cc9f0",
+        "size": 0.85
+      },
+      "popup": {
+        "title": "name",
+        "fields": []
+      },
       "attribution": "Natural Earth"
+    },
+    {
+      "id": "airports",
+      "title": "Aéroports civils",
+      "group": "Transports",
+      "source": {
+        "url": "https://raw.githubusercontent.com/davidmegginson/ourairports-data/e850302d9e66c2209edaa94a3b36bf8baf4312a1/airports.csv",
+        "format": "csv-points",
+        "lat": "latitude_deg",
+        "lon": "longitude_deg",
+        "filters": [
+          {
+            "prop": "type",
+            "in": [
+              "large_airport",
+              "medium_airport"
+            ]
+          },
+          {
+            "prop": "name",
+            "regex": "Air Base|Air Force|AFB\\b|Airbase|Naval Air|Base A[ée]rea|Army Air|Military|Air Station|\\bRAF |Base a[ée]rienne|Luftwaffe|Fliegerhorst|Aviation Base|Air Field|Airfield.*\\(mil|Joint Base|Space (Force )?Base|Reserve Base|National Guard Base|Marines? Base|Naval (Station|Base)",
+            "negate": true
+          }
+        ],
+        "props": [
+          "name",
+          "type",
+          "municipality",
+          "iso_country",
+          "iata_code"
+        ]
+      },
+      "style": {
+        "type": "icon",
+        "icon": "plane",
+        "color": {
+          "by": "type",
+          "values": {
+            "large_airport": "#8ecae6",
+            "medium_airport": "#5c7f99"
+          },
+          "default": "#5c7f99"
+        },
+        "size": 0.85
+      },
+      "legend": {
+        "large_airport": "Grand aéroport",
+        "medium_airport": "Aéroport moyen"
+      },
+      "popup": {
+        "title": "name",
+        "fields": [
+          {
+            "label": "Type",
+            "prop": "type",
+            "values": {
+              "large_airport": "Grand aéroport",
+              "medium_airport": "Aéroport moyen"
+            }
+          },
+          {
+            "label": "Ville",
+            "prop": "municipality"
+          },
+          {
+            "label": "Pays",
+            "prop": "iso_country"
+          },
+          {
+            "label": "Code IATA",
+            "prop": "iata_code"
+          }
+        ]
+      },
+      "attribution": "OurAirports (domaine public)"
     },
     {
       "id": "railroads",
@@ -192,26 +648,941 @@
       "group": "Transports",
       "source": {
         "url": "https://raw.githubusercontent.com/nvkelso/natural-earth-vector/ca96624a56bd078437bca8184e78163e5039ad19/geojson/ne_10m_railroads.geojson",
-        "props": ["electric", "mult_track"],
+        "props": [
+          "electric"
+        ],
         "precision": 3,
         "simplify": 0.01
       },
-      "style": { "type": "line", "color": "#b08968", "width": 0.7 },
+      "style": {
+        "type": "line",
+        "color": "#cdb4db",
+        "width": 0.8
+      },
       "popup": null,
       "attribution": "Natural Earth"
     },
-
+    {
+      "id": "airbases",
+      "title": "Bases aériennes militaires",
+      "group": "Armée",
+      "source": {
+        "url": "https://raw.githubusercontent.com/davidmegginson/ourairports-data/e850302d9e66c2209edaa94a3b36bf8baf4312a1/airports.csv",
+        "format": "csv-points",
+        "lat": "latitude_deg",
+        "lon": "longitude_deg",
+        "filters": [
+          {
+            "prop": "type",
+            "in": [
+              "large_airport",
+              "medium_airport",
+              "small_airport"
+            ]
+          },
+          {
+            "prop": "name",
+            "regex": "Air Base|Air Force|AFB\\b|Airbase|Naval Air|Base A[ée]rea|Army Air|Military|Air Station|\\bRAF |Base a[ée]rienne|Luftwaffe|Fliegerhorst|Aviation Base|Air Field|Airfield.*\\(mil|Joint Base|Space (Force )?Base|Reserve Base|National Guard Base|Marines? Base|Naval (Station|Base)"
+          }
+        ],
+        "props": [
+          "name",
+          "municipality",
+          "iso_country",
+          "type"
+        ]
+      },
+      "style": {
+        "type": "icon",
+        "icon": "jet",
+        "color": "#ff006e"
+      },
+      "popup": {
+        "title": "name",
+        "fields": [
+          {
+            "label": "Ville",
+            "prop": "municipality"
+          },
+          {
+            "label": "Pays",
+            "prop": "iso_country"
+          }
+        ]
+      },
+      "attribution": "OurAirports (domaine public)",
+      "note": "Repérées par leur nom (Air Base, AFB, Base Aérea…) : certaines bases manquent"
+    },
+    {
+      "id": "spaceports",
+      "title": "Bases de lancement spatial",
+      "group": "Armée",
+      "source": {
+        "url": "https://raw.githubusercontent.com/nvkelso/natural-earth-vector/ca96624a56bd078437bca8184e78163e5039ad19/geojson/ne_10m_airports.geojson",
+        "filters": [
+          {
+            "prop": "type",
+            "in": [
+              "spaceport"
+            ]
+          }
+        ],
+        "props": [
+          "name"
+        ]
+      },
+      "style": {
+        "type": "icon",
+        "icon": "rocket",
+        "color": "#c77dff",
+        "size": 1.1
+      },
+      "popup": {
+        "title": "name",
+        "fields": []
+      },
+      "attribution": "Natural Earth"
+    },
+    {
+      "id": "nuclear_plants",
+      "title": "Centrales nucléaires",
+      "group": "Électricité",
+      "source": {
+        "url": "https://raw.githubusercontent.com/cristianst85/GeoNuclearData/1bc8b4ac106af236902385b87e46c540b4864815/data/json/denormalized/nuclear_power_plants.json",
+        "format": "json-points",
+        "lat": "Latitude",
+        "lon": "Longitude",
+        "filters": [
+          {
+            "prop": "Status",
+            "in": [
+              "Operational",
+              "Under Construction",
+              "Suspended Operation"
+            ]
+          }
+        ],
+        "props": [
+          "Name",
+          "Country",
+          "Status",
+          "ReactorType",
+          "Capacity",
+          "OperationalFrom"
+        ]
+      },
+      "style": {
+        "type": "icon",
+        "icon": "atom",
+        "color": {
+          "by": "Status",
+          "values": {
+            "Operational": "#70e000",
+            "Under Construction": "#f9844a",
+            "Suspended Operation": "#8d99ae"
+          },
+          "default": "#8d99ae"
+        }
+      },
+      "legend": {
+        "Operational": "Réacteur en service",
+        "Under Construction": "Réacteur en construction",
+        "Suspended Operation": "Réacteur à l'arrêt"
+      },
+      "popup": {
+        "title": "Name",
+        "fields": [
+          {
+            "label": "Pays",
+            "prop": "Country"
+          },
+          {
+            "label": "Statut",
+            "prop": "Status"
+          },
+          {
+            "label": "Type de réacteur",
+            "prop": "ReactorType"
+          },
+          {
+            "label": "Puissance",
+            "prop": "Capacity",
+            "format": "integer",
+            "unit": "MW"
+          },
+          {
+            "label": "En service depuis",
+            "prop": "OperationalFrom"
+          }
+        ]
+      },
+      "attribution": "GeoNuclearData (ODbL)",
+      "note": "Un point par réacteur ; données mises à jour en 2024"
+    },
+    {
+      "id": "power_coal",
+      "title": "Centrales à charbon",
+      "group": "Électricité",
+      "source": {
+        "url": "https://raw.githubusercontent.com/wri/global-power-plant-database/7a91cfbb2a4e272597acbc00506d61fc1ec73b3d/output_database/global_power_plant_database.csv",
+        "format": "csv-points",
+        "lat": "latitude",
+        "lon": "longitude",
+        "numeric": [
+          "capacity_mw",
+          "commissioning_year"
+        ],
+        "filters": [
+          {
+            "prop": "primary_fuel",
+            "in": [
+              "Coal",
+              "Petcoke"
+            ]
+          }
+        ],
+        "props": [
+          "name",
+          "country_long",
+          "primary_fuel",
+          "capacity_mw",
+          "commissioning_year",
+          "owner"
+        ]
+      },
+      "style": {
+        "type": "icon",
+        "icon": "bolt",
+        "color": "#c08552",
+        "size": 0.9,
+        "size_by": {
+          "by": "capacity_mw",
+          "stops": [
+            [
+              0,
+              0.7
+            ],
+            [
+              500,
+              1
+            ],
+            [
+              3000,
+              1.5
+            ]
+          ]
+        }
+      },
+      "popup": {
+        "title": "name",
+        "fields": [
+          {
+            "label": "Pays",
+            "prop": "country_long"
+          },
+          {
+            "label": "Source d'énergie",
+            "prop": "primary_fuel",
+            "values": {
+              "Coal": "Charbon",
+              "Petcoke": "Coke de pétrole",
+              "Gas": "Gaz",
+              "Oil": "Fioul",
+              "Hydro": "Hydraulique",
+              "Solar": "Solaire",
+              "Wind": "Éolien",
+              "Geothermal": "Géothermie",
+              "Wave and Tidal": "Énergie marine",
+              "Biomass": "Biomasse"
+            }
+          },
+          {
+            "label": "Puissance",
+            "prop": "capacity_mw",
+            "format": "integer",
+            "unit": "MW"
+          },
+          {
+            "label": "Mise en service",
+            "prop": "commissioning_year",
+            "format": "year"
+          },
+          {
+            "label": "Exploitant",
+            "prop": "owner"
+          }
+        ]
+      },
+      "attribution": "WRI Global Power Plant Database (CC BY 4.0)",
+      "note": "Base mondiale du WRI, dernière mise à jour 2021"
+    },
+    {
+      "id": "power_gas",
+      "title": "Centrales à gaz",
+      "group": "Électricité",
+      "source": {
+        "url": "https://raw.githubusercontent.com/wri/global-power-plant-database/7a91cfbb2a4e272597acbc00506d61fc1ec73b3d/output_database/global_power_plant_database.csv",
+        "format": "csv-points",
+        "lat": "latitude",
+        "lon": "longitude",
+        "numeric": [
+          "capacity_mw",
+          "commissioning_year"
+        ],
+        "filters": [
+          {
+            "prop": "primary_fuel",
+            "in": [
+              "Gas"
+            ]
+          }
+        ],
+        "props": [
+          "name",
+          "country_long",
+          "primary_fuel",
+          "capacity_mw",
+          "commissioning_year",
+          "owner"
+        ]
+      },
+      "style": {
+        "type": "icon",
+        "icon": "bolt",
+        "color": "#ff9f1c",
+        "size": 0.9,
+        "size_by": {
+          "by": "capacity_mw",
+          "stops": [
+            [
+              0,
+              0.7
+            ],
+            [
+              500,
+              1
+            ],
+            [
+              3000,
+              1.5
+            ]
+          ]
+        }
+      },
+      "popup": {
+        "title": "name",
+        "fields": [
+          {
+            "label": "Pays",
+            "prop": "country_long"
+          },
+          {
+            "label": "Source d'énergie",
+            "prop": "primary_fuel",
+            "values": {
+              "Coal": "Charbon",
+              "Petcoke": "Coke de pétrole",
+              "Gas": "Gaz",
+              "Oil": "Fioul",
+              "Hydro": "Hydraulique",
+              "Solar": "Solaire",
+              "Wind": "Éolien",
+              "Geothermal": "Géothermie",
+              "Wave and Tidal": "Énergie marine",
+              "Biomass": "Biomasse"
+            }
+          },
+          {
+            "label": "Puissance",
+            "prop": "capacity_mw",
+            "format": "integer",
+            "unit": "MW"
+          },
+          {
+            "label": "Mise en service",
+            "prop": "commissioning_year",
+            "format": "year"
+          },
+          {
+            "label": "Exploitant",
+            "prop": "owner"
+          }
+        ]
+      },
+      "attribution": "WRI Global Power Plant Database (CC BY 4.0)",
+      "note": "Base mondiale du WRI, dernière mise à jour 2021"
+    },
+    {
+      "id": "power_oil",
+      "title": "Centrales au fioul",
+      "group": "Électricité",
+      "source": {
+        "url": "https://raw.githubusercontent.com/wri/global-power-plant-database/7a91cfbb2a4e272597acbc00506d61fc1ec73b3d/output_database/global_power_plant_database.csv",
+        "format": "csv-points",
+        "lat": "latitude",
+        "lon": "longitude",
+        "numeric": [
+          "capacity_mw",
+          "commissioning_year"
+        ],
+        "filters": [
+          {
+            "prop": "primary_fuel",
+            "in": [
+              "Oil"
+            ]
+          }
+        ],
+        "props": [
+          "name",
+          "country_long",
+          "primary_fuel",
+          "capacity_mw",
+          "commissioning_year",
+          "owner"
+        ]
+      },
+      "style": {
+        "type": "icon",
+        "icon": "bolt",
+        "color": "#d62828",
+        "size": 0.9,
+        "size_by": {
+          "by": "capacity_mw",
+          "stops": [
+            [
+              0,
+              0.7
+            ],
+            [
+              500,
+              1
+            ],
+            [
+              3000,
+              1.5
+            ]
+          ]
+        }
+      },
+      "popup": {
+        "title": "name",
+        "fields": [
+          {
+            "label": "Pays",
+            "prop": "country_long"
+          },
+          {
+            "label": "Source d'énergie",
+            "prop": "primary_fuel",
+            "values": {
+              "Coal": "Charbon",
+              "Petcoke": "Coke de pétrole",
+              "Gas": "Gaz",
+              "Oil": "Fioul",
+              "Hydro": "Hydraulique",
+              "Solar": "Solaire",
+              "Wind": "Éolien",
+              "Geothermal": "Géothermie",
+              "Wave and Tidal": "Énergie marine",
+              "Biomass": "Biomasse"
+            }
+          },
+          {
+            "label": "Puissance",
+            "prop": "capacity_mw",
+            "format": "integer",
+            "unit": "MW"
+          },
+          {
+            "label": "Mise en service",
+            "prop": "commissioning_year",
+            "format": "year"
+          },
+          {
+            "label": "Exploitant",
+            "prop": "owner"
+          }
+        ]
+      },
+      "attribution": "WRI Global Power Plant Database (CC BY 4.0)",
+      "note": "Base mondiale du WRI, dernière mise à jour 2021"
+    },
+    {
+      "id": "power_hydro",
+      "title": "Barrages hydroélectriques",
+      "group": "Électricité",
+      "source": {
+        "url": "https://raw.githubusercontent.com/wri/global-power-plant-database/7a91cfbb2a4e272597acbc00506d61fc1ec73b3d/output_database/global_power_plant_database.csv",
+        "format": "csv-points",
+        "lat": "latitude",
+        "lon": "longitude",
+        "numeric": [
+          "capacity_mw",
+          "commissioning_year"
+        ],
+        "filters": [
+          {
+            "prop": "primary_fuel",
+            "in": [
+              "Hydro"
+            ]
+          }
+        ],
+        "props": [
+          "name",
+          "country_long",
+          "primary_fuel",
+          "capacity_mw",
+          "commissioning_year",
+          "owner"
+        ]
+      },
+      "style": {
+        "type": "icon",
+        "icon": "bolt",
+        "color": "#0096c7",
+        "size": 0.9,
+        "size_by": {
+          "by": "capacity_mw",
+          "stops": [
+            [
+              0,
+              0.7
+            ],
+            [
+              500,
+              1
+            ],
+            [
+              3000,
+              1.5
+            ]
+          ]
+        }
+      },
+      "popup": {
+        "title": "name",
+        "fields": [
+          {
+            "label": "Pays",
+            "prop": "country_long"
+          },
+          {
+            "label": "Source d'énergie",
+            "prop": "primary_fuel",
+            "values": {
+              "Coal": "Charbon",
+              "Petcoke": "Coke de pétrole",
+              "Gas": "Gaz",
+              "Oil": "Fioul",
+              "Hydro": "Hydraulique",
+              "Solar": "Solaire",
+              "Wind": "Éolien",
+              "Geothermal": "Géothermie",
+              "Wave and Tidal": "Énergie marine",
+              "Biomass": "Biomasse"
+            }
+          },
+          {
+            "label": "Puissance",
+            "prop": "capacity_mw",
+            "format": "integer",
+            "unit": "MW"
+          },
+          {
+            "label": "Mise en service",
+            "prop": "commissioning_year",
+            "format": "year"
+          },
+          {
+            "label": "Exploitant",
+            "prop": "owner"
+          }
+        ]
+      },
+      "attribution": "WRI Global Power Plant Database (CC BY 4.0)",
+      "note": "Base mondiale du WRI, dernière mise à jour 2021"
+    },
+    {
+      "id": "power_renew",
+      "title": "Solaire, éolien et autres renouvelables",
+      "group": "Électricité",
+      "source": {
+        "url": "https://raw.githubusercontent.com/wri/global-power-plant-database/7a91cfbb2a4e272597acbc00506d61fc1ec73b3d/output_database/global_power_plant_database.csv",
+        "format": "csv-points",
+        "lat": "latitude",
+        "lon": "longitude",
+        "numeric": [
+          "capacity_mw",
+          "commissioning_year"
+        ],
+        "filters": [
+          {
+            "prop": "primary_fuel",
+            "in": [
+              "Solar",
+              "Wind",
+              "Geothermal",
+              "Wave and Tidal",
+              "Biomass"
+            ]
+          }
+        ],
+        "props": [
+          "name",
+          "country_long",
+          "primary_fuel",
+          "capacity_mw",
+          "commissioning_year",
+          "owner"
+        ]
+      },
+      "style": {
+        "type": "icon",
+        "icon": "bolt",
+        "color": {
+          "by": "primary_fuel",
+          "values": {
+            "Solar": "#ffea00",
+            "Wind": "#b7e4c7",
+            "Geothermal": "#ff99c8",
+            "Wave and Tidal": "#48cae4",
+            "Biomass": "#6a994e"
+          },
+          "default": "#6a994e"
+        },
+        "size": 0.9,
+        "size_by": {
+          "by": "capacity_mw",
+          "stops": [
+            [
+              0,
+              0.7
+            ],
+            [
+              500,
+              1
+            ],
+            [
+              3000,
+              1.5
+            ]
+          ]
+        }
+      },
+      "popup": {
+        "title": "name",
+        "fields": [
+          {
+            "label": "Pays",
+            "prop": "country_long"
+          },
+          {
+            "label": "Source d'énergie",
+            "prop": "primary_fuel",
+            "values": {
+              "Coal": "Charbon",
+              "Petcoke": "Coke de pétrole",
+              "Gas": "Gaz",
+              "Oil": "Fioul",
+              "Hydro": "Hydraulique",
+              "Solar": "Solaire",
+              "Wind": "Éolien",
+              "Geothermal": "Géothermie",
+              "Wave and Tidal": "Énergie marine",
+              "Biomass": "Biomasse"
+            }
+          },
+          {
+            "label": "Puissance",
+            "prop": "capacity_mw",
+            "format": "integer",
+            "unit": "MW"
+          },
+          {
+            "label": "Mise en service",
+            "prop": "commissioning_year",
+            "format": "year"
+          },
+          {
+            "label": "Exploitant",
+            "prop": "owner"
+          }
+        ]
+      },
+      "legend": {
+        "Solar": "Solaire",
+        "Wind": "Éolien",
+        "Geothermal": "Géothermie",
+        "Wave and Tidal": "Énergie marine",
+        "Biomass": "Biomasse"
+      },
+      "attribution": "WRI Global Power Plant Database (CC BY 4.0)",
+      "note": "Base mondiale du WRI, dernière mise à jour 2021"
+    },
+    {
+      "id": "oil_pipelines",
+      "title": "Oléoducs (pétrole)",
+      "group": "Pétrole et gaz",
+      "source": {
+        "manual": {
+          "file": "*GOIT*",
+          "member": "*.geojson",
+          "how": "Global Oil Infrastructure Tracker, formulaire « Download data » sur globalenergymonitor.org"
+        },
+        "precision": 3,
+        "simplify": 0.005
+      },
+      "style": {
+        "type": "line",
+        "color": "#d62828",
+        "width": 1.6
+      },
+      "popup": "auto",
+      "attribution": "Global Energy Monitor (CC BY 4.0)"
+    },
+    {
+      "id": "gas_pipelines",
+      "title": "Gazoducs",
+      "group": "Pétrole et gaz",
+      "source": {
+        "manual": {
+          "file": "*GGIT*",
+          "member": "*pipeline*.geojson",
+          "how": "Global Gas Infrastructure Tracker, formulaire « Download data » sur globalenergymonitor.org"
+        },
+        "precision": 3,
+        "simplify": 0.005
+      },
+      "style": {
+        "type": "line",
+        "color": "#ff9f1c",
+        "width": 1.4
+      },
+      "popup": "auto",
+      "attribution": "Global Energy Monitor (CC BY 4.0)"
+    },
+    {
+      "id": "lng_terminals",
+      "title": "Terminaux de gaz liquéfié (GNL)",
+      "group": "Pétrole et gaz",
+      "source": {
+        "manual": {
+          "file": "*GGIT*",
+          "member": "*terminal*.geojson",
+          "how": "Global Gas Infrastructure Tracker, formulaire « Download data » sur globalenergymonitor.org"
+        }
+      },
+      "style": {
+        "type": "icon",
+        "icon": "flame",
+        "color": "#f72585"
+      },
+      "popup": "auto",
+      "attribution": "Global Energy Monitor (CC BY 4.0)"
+    },
+    {
+      "id": "oil_gas_fields",
+      "title": "Gisements de pétrole et de gaz",
+      "group": "Pétrole et gaz",
+      "source": {
+        "manual": {
+          "file": "*GOGET*",
+          "member": "*.geojson",
+          "how": "Global Oil and Gas Extraction Tracker, formulaire « Download data » sur globalenergymonitor.org"
+        }
+      },
+      "style": {
+        "type": "icon",
+        "icon": "drop",
+        "color": "#9d4edd"
+      },
+      "popup": "auto",
+      "attribution": "Global Energy Monitor (CC BY 4.0)"
+    },
+    {
+      "id": "plates",
+      "title": "Plaques tectoniques",
+      "group": "Géographie",
+      "source": {
+        "url": "https://raw.githubusercontent.com/fraxen/tectonicplates/339b0c56563c118307b1f4542703047f5f698fae/GeoJSON/PB2002_boundaries.json",
+        "props": [
+          "Name"
+        ],
+        "precision": 3
+      },
+      "style": {
+        "type": "line",
+        "color": "#fb5607",
+        "width": 1.5
+      },
+      "popup": {
+        "title": "Name",
+        "fields": []
+      },
+      "attribution": "PB2002 (Bird 2003)"
+    },
+    {
+      "id": "volcanoes",
+      "title": "Volcans actifs (depuis 12 000 ans)",
+      "group": "Géographie",
+      "source": {
+        "url": "https://webservices.volcano.si.edu/geoserver/GVP-VOTW/ows?service=WFS&version=2.0.0&request=GetFeature&typeName=GVP-VOTW:Smithsonian_VOTW_Holocene_Volcanoes&outputFormat=application%2Fjson"
+      },
+      "style": {
+        "type": "icon",
+        "icon": "triangle",
+        "color": "#ff3c38",
+        "size": 0.8
+      },
+      "popup": "auto",
+      "attribution": "Smithsonian Global Volcanism Program"
+    },
+    {
+      "id": "rivers",
+      "title": "Grands fleuves",
+      "group": "Géographie",
+      "source": {
+        "url": "https://raw.githubusercontent.com/nvkelso/natural-earth-vector/ca96624a56bd078437bca8184e78163e5039ad19/geojson/ne_50m_rivers_lake_centerlines.geojson",
+        "props": [
+          "name"
+        ],
+        "precision": 3
+      },
+      "style": {
+        "type": "line",
+        "color": "#219ebc",
+        "width": 1.3
+      },
+      "popup": {
+        "title": "name",
+        "fields": []
+      },
+      "attribution": "Natural Earth"
+    },
+    {
+      "id": "borders_1815",
+      "title": "Frontières en 1815",
+      "group": "Histoire",
+      "source": {
+        "url": "https://raw.githubusercontent.com/aourednik/historical-basemaps/4b5039e50d8d2464b065bd76ad6086cd4597108d/geojson/world_1815.geojson",
+        "props": [
+          "NAME",
+          "SUBJECTO"
+        ],
+        "precision": 3,
+        "simplify": 0.01
+      },
+      "style": {
+        "type": "fill",
+        "color": "#e9c46a",
+        "opacity": 0.15,
+        "outline": "#e9c46a",
+        "outline_width": 1.4
+      },
+      "popup": {
+        "title": "NAME",
+        "fields": [
+          {
+            "label": "Dépend de",
+            "prop": "SUBJECTO"
+          }
+        ]
+      },
+      "attribution": "historical-basemaps (A. Ourednik)"
+    },
+    {
+      "id": "borders_1880",
+      "title": "Frontières en 1880",
+      "group": "Histoire",
+      "source": {
+        "url": "https://raw.githubusercontent.com/aourednik/historical-basemaps/4b5039e50d8d2464b065bd76ad6086cd4597108d/geojson/world_1880.geojson",
+        "props": [
+          "NAME",
+          "SUBJECTO"
+        ],
+        "precision": 3,
+        "simplify": 0.01
+      },
+      "style": {
+        "type": "fill",
+        "color": "#f4a261",
+        "opacity": 0.15,
+        "outline": "#f4a261",
+        "outline_width": 1.4
+      },
+      "popup": {
+        "title": "NAME",
+        "fields": [
+          {
+            "label": "Dépend de",
+            "prop": "SUBJECTO"
+          }
+        ]
+      },
+      "attribution": "historical-basemaps (A. Ourednik)"
+    },
     {
       "id": "borders_1914",
       "title": "Frontières en 1914",
       "group": "Histoire",
       "source": {
         "url": "https://raw.githubusercontent.com/aourednik/historical-basemaps/4b5039e50d8d2464b065bd76ad6086cd4597108d/geojson/world_1914.geojson",
-        "props": ["NAME", "SUBJECTO"],
-        "precision": 3
+        "props": [
+          "NAME",
+          "SUBJECTO"
+        ],
+        "precision": 3,
+        "simplify": 0.01
       },
-      "style": { "type": "fill", "color": "#c9a227", "opacity": 0.08, "outline": "#c9a227" },
-      "popup": { "title": "NAME", "fields": [{ "label": "Dépend de", "prop": "SUBJECTO" }] },
+      "style": {
+        "type": "fill",
+        "color": "#e76f51",
+        "opacity": 0.15,
+        "outline": "#e76f51",
+        "outline_width": 1.4
+      },
+      "popup": {
+        "title": "NAME",
+        "fields": [
+          {
+            "label": "Dépend de",
+            "prop": "SUBJECTO"
+          }
+        ]
+      },
+      "attribution": "historical-basemaps (A. Ourednik)"
+    },
+    {
+      "id": "borders_1920",
+      "title": "Frontières en 1920",
+      "group": "Histoire",
+      "source": {
+        "url": "https://raw.githubusercontent.com/aourednik/historical-basemaps/4b5039e50d8d2464b065bd76ad6086cd4597108d/geojson/world_1920.geojson",
+        "props": [
+          "NAME",
+          "SUBJECTO"
+        ],
+        "precision": 3,
+        "simplify": 0.01
+      },
+      "style": {
+        "type": "fill",
+        "color": "#2a9d8f",
+        "opacity": 0.15,
+        "outline": "#2a9d8f",
+        "outline_width": 1.4
+      },
+      "popup": {
+        "title": "NAME",
+        "fields": [
+          {
+            "label": "Dépend de",
+            "prop": "SUBJECTO"
+          }
+        ]
+      },
       "attribution": "historical-basemaps (A. Ourednik)"
     },
     {
@@ -220,11 +1591,29 @@
       "group": "Histoire",
       "source": {
         "url": "https://raw.githubusercontent.com/aourednik/historical-basemaps/4b5039e50d8d2464b065bd76ad6086cd4597108d/geojson/world_1938.geojson",
-        "props": ["NAME", "SUBJECTO"],
-        "precision": 3
+        "props": [
+          "NAME",
+          "SUBJECTO"
+        ],
+        "precision": 3,
+        "simplify": 0.01
       },
-      "style": { "type": "fill", "color": "#c9a227", "opacity": 0.08, "outline": "#c9a227" },
-      "popup": { "title": "NAME", "fields": [{ "label": "Dépend de", "prop": "SUBJECTO" }] },
+      "style": {
+        "type": "fill",
+        "color": "#9b5de5",
+        "opacity": 0.15,
+        "outline": "#9b5de5",
+        "outline_width": 1.4
+      },
+      "popup": {
+        "title": "NAME",
+        "fields": [
+          {
+            "label": "Dépend de",
+            "prop": "SUBJECTO"
+          }
+        ]
+      },
       "attribution": "historical-basemaps (A. Ourednik)"
     },
     {
@@ -233,11 +1622,29 @@
       "group": "Histoire",
       "source": {
         "url": "https://raw.githubusercontent.com/aourednik/historical-basemaps/4b5039e50d8d2464b065bd76ad6086cd4597108d/geojson/world_1945.geojson",
-        "props": ["NAME", "SUBJECTO"],
-        "precision": 3
+        "props": [
+          "NAME",
+          "SUBJECTO"
+        ],
+        "precision": 3,
+        "simplify": 0.01
       },
-      "style": { "type": "fill", "color": "#c9a227", "opacity": 0.08, "outline": "#c9a227" },
-      "popup": { "title": "NAME", "fields": [{ "label": "Dépend de", "prop": "SUBJECTO" }] },
+      "style": {
+        "type": "fill",
+        "color": "#f15bb5",
+        "opacity": 0.15,
+        "outline": "#f15bb5",
+        "outline_width": 1.4
+      },
+      "popup": {
+        "title": "NAME",
+        "fields": [
+          {
+            "label": "Dépend de",
+            "prop": "SUBJECTO"
+          }
+        ]
+      },
       "attribution": "historical-basemaps (A. Ourednik)"
     },
     {
@@ -246,14 +1653,62 @@
       "group": "Histoire",
       "source": {
         "url": "https://raw.githubusercontent.com/aourednik/historical-basemaps/4b5039e50d8d2464b065bd76ad6086cd4597108d/geojson/world_1960.geojson",
-        "props": ["NAME", "SUBJECTO"],
-        "precision": 3
+        "props": [
+          "NAME",
+          "SUBJECTO"
+        ],
+        "precision": 3,
+        "simplify": 0.01
       },
-      "style": { "type": "fill", "color": "#c9a227", "opacity": 0.08, "outline": "#c9a227" },
-      "popup": { "title": "NAME", "fields": [{ "label": "Dépend de", "prop": "SUBJECTO" }] },
+      "style": {
+        "type": "fill",
+        "color": "#00bbf9",
+        "opacity": 0.15,
+        "outline": "#00bbf9",
+        "outline_width": 1.4
+      },
+      "popup": {
+        "title": "NAME",
+        "fields": [
+          {
+            "label": "Dépend de",
+            "prop": "SUBJECTO"
+          }
+        ]
+      },
       "attribution": "historical-basemaps (A. Ourednik)"
     },
-
+    {
+      "id": "borders_1994",
+      "title": "Frontières en 1994",
+      "group": "Histoire",
+      "source": {
+        "url": "https://raw.githubusercontent.com/aourednik/historical-basemaps/4b5039e50d8d2464b065bd76ad6086cd4597108d/geojson/world_1994.geojson",
+        "props": [
+          "NAME",
+          "SUBJECTO"
+        ],
+        "precision": 3,
+        "simplify": 0.01
+      },
+      "style": {
+        "type": "fill",
+        "color": "#00f5d4",
+        "opacity": 0.15,
+        "outline": "#00f5d4",
+        "outline_width": 1.4
+      },
+      "popup": {
+        "title": "NAME",
+        "fields": [
+          {
+            "label": "Dépend de",
+            "prop": "SUBJECTO"
+          }
+        ]
+      },
+      "attribution": "historical-basemaps (A. Ourednik)"
+    },
     {
       "id": "earthquakes",
       "title": "Séismes M4.5+ (7 derniers jours)",
@@ -264,13 +1719,40 @@
       },
       "style": {
         "type": "circle",
-        "color": "#ff006e",
-        "radius": { "by": "mag", "stops": [[4.5, 3], [6, 7], [8, 16]] },
-        "opacity": 0.7
+        "color": "#e9ff70",
+        "radius": {
+          "by": "mag",
+          "stops": [
+            [
+              4.5,
+              4
+            ],
+            [
+              6,
+              8
+            ],
+            [
+              8,
+              18
+            ]
+          ]
+        },
+        "opacity": 0.85
       },
       "popup": {
         "title": "place",
-        "fields": [{ "label": "Magnitude", "prop": "mag", "format": "decimal" }, { "label": "Date", "prop": "time", "format": "datetime" }]
+        "fields": [
+          {
+            "label": "Magnitude",
+            "prop": "mag",
+            "format": "decimal"
+          },
+          {
+            "label": "Date",
+            "prop": "time",
+            "format": "datetime"
+          }
+        ]
       },
       "attribution": "USGS"
     }

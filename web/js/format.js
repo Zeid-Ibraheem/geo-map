@@ -8,6 +8,7 @@ const decimal = new Intl.NumberFormat("fr-FR", { maximumFractionDigits: 1 });
 export function formatValue(value, format = "integer", unit = "") {
   if (value === null || value === undefined || value === "") return "—";
   if (format === "datetime") return new Date(value).toLocaleString("fr-FR");
+  if (format === "year") return Number.isFinite(Number(value)) ? String(Math.round(Number(value))) : String(value);
   if (typeof value !== "number") {
     const n = Number(value);
     if (Number.isNaN(n)) return String(value);

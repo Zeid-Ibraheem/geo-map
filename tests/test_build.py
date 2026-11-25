@@ -8,6 +8,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "scripts"))
 
 from geomap import transform as tf  # noqa: E402
+from geomap.sources import ManualFileMissing, read_features  # noqa: E402
 from geomap.indicators import load_indicator, parse_imf, parse_worldbank  # noqa: E402
 
 REPO = Path(__file__).resolve().parent.parent
@@ -19,8 +20,15 @@ class TransformTests(unittest.TestCase):
             {"type": "Feature", "geometry": None, "properties": {"featurecla": "Admin-0 capital", "name": "Paris", "x": 1}},
             {"type": "Feature", "geometry": None, "properties": {"featurecla": "Populated place", "name": "Nancy", "x": 2}},
         ]
-        kept = tf.select_props(tf.keep_matching(feats, {"featurecla": ["Admin-0 capital"]}), ["name"])
+        kept = tf.select_props(tf.apply_filters(feats, [{"prop": "featurecla", "in": ["Admin-0 capital"]}]), ["name"])
         self.assertEqual([f["properties"] for f in kept], [{"name": "Paris"}])
+
+    def test_regex_filters(self):
+        feats = [{"type": "Feature", "geometry": None, "properties": {"name": n}} for n in ("Ramstein Air Base", "Nancy-Essey", None)]
+        mil = [{"prop": "name", "regex": "air base"}]
+        self.assertEqual([f["properties"]["name"] for f in tf.apply_filters(feats, mil)], ["Ramstein Air Base"])
+        civil = [{**mil[0], "negate": True}]
+        self.assertEqual([f["properties"]["name"] for f in tf.apply_filters(feats, civil)], ["Nancy-Essey", None])
 
     def test_points_from_records_skips_missing(self):
         pts = tf.points_from_records([{"Latitude": 48.7, "Longitude": 6.2, "Name": "A"}, {"Latitude": None, "Longitude": 1}], "Latitude", "Longitude")
@@ -49,6 +57,38 @@ class TransformTests(unittest.TestCase):
         feats = [{"type": "Feature", "geometry": None, "properties": {"ISO_A3_EH": "-99", "ADM0_A3": "KOS", "NAME_FR": None, "NAME": "Kosovo"}}]
         out = tf.prepare_countries(feats, ["ISO_A3_EH", "ADM0_A3"], ["NAME_FR", "NAME"])
         self.assertEqual(out[0]["properties"], {"iso3": "KOS", "name": "Kosovo"})
+
+
+class SourceTests(unittest.TestCase):
+    def setUp(self):
+        import tempfile
+        self.tmp = Path(tempfile.mkdtemp())
+
+    def test_csv_points_with_numbers(self):
+        csv_file = self.tmp / "plants.csv"
+        csv_file.write_text("name,latitude,longitude,capacity_mw,primary_fuel\nA,48.7,6.2,1300.0,Nuclear\nB,,1,5,Gas\nC,10,20,,Gas\n")
+        src = {"url": "x", "format": "csv-points", "lat": "latitude", "lon": "longitude", "numeric": ["capacity_mw"],
+               "filters": [{"prop": "primary_fuel", "in": ["Gas"]}]}
+        feats = read_features(src, lambda url: csv_file, self.tmp, REPO)
+        self.assertEqual([f["properties"] for f in feats], [{"name": "C", "capacity_mw": None, "primary_fuel": "Gas"}])
+
+    def test_manual_zip(self):
+        import json
+        import zipfile
+        manual = self.tmp / "manual"
+        manual.mkdir()
+        gj = {"type": "FeatureCollection", "features": [{"type": "Feature", "geometry": {"type": "LineString", "coordinates": [[0, 0], [1, 1]]}, "properties": {"Name": "Druzhba"}}]}
+        with zipfile.ZipFile(manual / "GEM-GGIT-2026.zip", "w") as z:
+            z.writestr("GGIT/pipelines.geojson", json.dumps(gj))
+            z.writestr("GGIT/terminals.geojson", json.dumps({"type": "FeatureCollection", "features": []}))
+        src = {"manual": {"file": "*GGIT*", "member": "*pipeline*.geojson", "how": "test"}}
+        self.assertEqual(read_features(src, None, manual, REPO)[0]["properties"]["Name"], "Druzhba")
+        with self.assertRaises(ManualFileMissing):
+            read_features({"manual": {"file": "*GOIT*", "how": "test"}}, None, manual, REPO)
+
+    def test_repo_file(self):
+        feats = read_features({"path": "static-data/chokepoints.geojson"}, None, self.tmp, REPO)
+        self.assertEqual(len(feats), 10)
 
 
 class IndicatorTests(unittest.TestCase):

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import math
+import re
 from typing import Any, Iterable
 
 Feature = dict[str, Any]
@@ -10,14 +11,26 @@ Feature = dict[str, Any]
 
 # ---------- filtres et propriétés ----------
 
-def keep_matching(features: Iterable[Feature], keep: dict[str, list] | None) -> list[Feature]:
-    """Garde les objets dont chaque propriété listée a une des valeurs autorisées."""
-    if not keep:
+def _passes(props: dict, rule: dict) -> bool:
+    value = props.get(rule["prop"])
+    if "in" in rule:
+        ok = value in rule["in"]
+    elif "regex" in rule:
+        ok = value is not None and re.search(rule["regex"], str(value), re.IGNORECASE) is not None
+    else:
+        raise ValueError(f"filtre sans 'in' ni 'regex' : {rule}")
+    return ok != rule.get("negate", False)
+
+
+def apply_filters(features: Iterable[Feature], filters: list[dict] | None) -> list[Feature]:
+    """Garde les objets qui respectent toutes les règles.
+
+    Règle : {"prop": "type", "in": [...]} ou {"prop": "name", "regex": "..."},
+    avec "negate": true pour inverser.
+    """
+    if not filters:
         return list(features)
-    return [
-        f for f in features
-        if all((f.get("properties") or {}).get(k) in allowed for k, allowed in keep.items())
-    ]
+    return [f for f in features if all(_passes(f.get("properties") or {}, r) for r in filters)]
 
 
 def select_props(features: Iterable[Feature], props: list[str] | None) -> list[Feature]:
@@ -31,18 +44,31 @@ def select_props(features: Iterable[Feature], props: list[str] | None) -> list[F
     return out
 
 
-def points_from_records(records: list[dict], lat: str, lon: str) -> list[Feature]:
-    """Convertit une liste d'enregistrements (lat/lon en colonnes) en points GeoJSON."""
+def _number(value):
+    if value in (None, ""):
+        return None
+    try:
+        n = float(value)
+    except (TypeError, ValueError):
+        return value
+    return int(n) if n.is_integer() else n
+
+
+def points_from_records(records: Iterable[dict], lat: str, lon: str, numeric: list[str] | None = None) -> list[Feature]:
+    """Convertit des enregistrements (lat/lon en colonnes, ex. CSV) en points GeoJSON.
+
+    `numeric` : colonnes à convertir en nombres (un CSV ne contient que du texte).
+    """
     features = []
     for r in records:
-        y, x = r.get(lat), r.get(lon)
-        if y is None or x is None:
+        y, x = _number(r.get(lat)), _number(r.get(lon))
+        if not isinstance(y, (int, float)) or not isinstance(x, (int, float)):
             continue
-        props = {k: v for k, v in r.items() if k not in (lat, lon)}
+        props = {k: (_number(v) if numeric and k in numeric else v) for k, v in r.items() if k not in (lat, lon)}
         features.append({
             "type": "Feature",
             "geometry": {"type": "Point", "coordinates": [float(x), float(y)]},
-            "properties": props,
+            "properties": {k: (None if v == "" else v) for k, v in props.items()},
         })
     return features
 

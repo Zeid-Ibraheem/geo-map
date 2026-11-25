@@ -1,0 +1,16 @@
+{
+  "type": "FeatureCollection",
+  "source": "Liste des 8 passages du rapport « World Oil Transit Chokepoints » de l'EIA (agence américaine de l'énergie), plus 2 détroits militairement clés. Positions approximatives, placées au point le plus étroit.",
+  "features": [
+    { "type": "Feature", "geometry": { "type": "Point", "coordinates": [56.25, 26.57] }, "properties": { "name": "Détroit d'Ormuz", "liste": "EIA", "relie": "Golfe Persique ↔ golfe d'Oman" } },
+    { "type": "Feature", "geometry": { "type": "Point", "coordinates": [101.2, 2.5] }, "properties": { "name": "Détroit de Malacca", "liste": "EIA", "relie": "Océan Indien ↔ mer de Chine méridionale" } },
+    { "type": "Feature", "geometry": { "type": "Point", "coordinates": [32.33, 30.6] }, "properties": { "name": "Canal de Suez et oléoduc SUMED", "liste": "EIA", "relie": "Méditerranée ↔ mer Rouge" } },
+    { "type": "Feature", "geometry": { "type": "Point", "coordinates": [43.33, 12.58] }, "properties": { "name": "Détroit de Bab el-Mandeb", "liste": "EIA", "relie": "Mer Rouge ↔ golfe d'Aden" } },
+    { "type": "Feature", "geometry": { "type": "Point", "coordinates": [10.95, 55.35] }, "properties": { "name": "Détroits danois", "liste": "EIA", "relie": "Mer Baltique ↔ mer du Nord" } },
+    { "type": "Feature", "geometry": { "type": "Point", "coordinates": [29.07, 41.12] }, "properties": { "name": "Détroits turcs (Bosphore, Dardanelles)", "liste": "EIA", "relie": "Mer Noire ↔ Méditerranée" } },
+    { "type": "Feature", "geometry": { "type": "Point", "coordinates": [-79.68, 9.08] }, "properties": { "name": "Canal de Panama", "liste": "EIA", "relie": "Atlantique ↔ Pacifique" } },
+    { "type": "Feature", "geometry": { "type": "Point", "coordinates": [18.47, -34.36] }, "properties": { "name": "Cap de Bonne-Espérance", "liste": "EIA", "relie": "Atlantique ↔ océan Indien" } },
+    { "type": "Feature", "geometry": { "type": "Point", "coordinates": [-5.6, 35.97] }, "properties": { "name": "Détroit de Gibraltar", "liste": "ajout", "relie": "Atlantique ↔ Méditerranée" } },
+    { "type": "Feature", "geometry": { "type": "Point", "coordinates": [119.5, 24.5] }, "properties": { "name": "Détroit de Taïwan", "liste": "ajout", "relie": "Mer de Chine orientale ↔ mer de Chine méridionale" } }
+  ]
+}

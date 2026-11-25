@@ -1,8 +1,8 @@
 :root {
-  --bg: rgba(14, 16, 21, 0.92);
-  --fg: #e6e6e6;
-  --muted: #8b919e;
-  --line: #2c303a;
+  --bg: rgba(12, 14, 19, 0.97);
+  --fg: #eceef2;
+  --muted: #a3a9b6;
+  --line: #323743;
   --accent: #f9c74f;
   font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   color-scheme: dark;
@@ -11,52 +11,58 @@
 html, body { margin: 0; height: 100%; background: #0b0d12; color: var(--fg); }
 #map { position: absolute; inset: 0; }
 
-/* ---------- panneau des couches ---------- */
+/* ---------- panneau des couches (haut gauche) ---------- */
 .panel {
-  position: absolute; top: 10px; left: 10px; z-index: 2;
-  width: 270px; max-height: calc(100% - 20px); overflow: auto;
-  background: var(--bg); border: 1px solid var(--line); border-radius: 8px;
-  font-size: 13px; backdrop-filter: blur(4px);
+  position: absolute; top: 12px; left: 12px; z-index: 2;
+  width: 310px; max-height: calc(100% - 60px); overflow: auto;
+  background: var(--bg); border: 1px solid var(--line); border-radius: 10px;
+  font-size: 15px; box-shadow: 0 4px 18px rgba(0, 0, 0, 0.5);
 }
 .panel-toggle {
-  position: sticky; top: 0; width: 100%; padding: 9px 12px; text-align: left;
+  position: sticky; top: 0; z-index: 1; width: 100%; padding: 11px 14px; text-align: left;
   background: var(--bg); color: var(--fg); border: 0; border-bottom: 1px solid var(--line);
-  font-family: inherit; font-size: 13px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; cursor: pointer;
+  font-family: inherit; font-size: 15px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; cursor: pointer;
 }
 .panel-toggle::after { content: "▾"; float: right; color: var(--muted); }
 .panel-toggle[aria-expanded="false"]::after { content: "▸"; }
 .panel-body { padding: 4px 0 8px; }
 
-.section { border-bottom: 1px solid var(--line); padding: 2px 12px 6px; }
+.section { border-bottom: 1px solid var(--line); padding: 2px 14px 8px; }
 .section:last-child { border-bottom: 0; }
-.section > summary { cursor: pointer; padding: 6px 0 4px; color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; }
+.section > summary { cursor: pointer; padding: 8px 0 5px; color: var(--accent); font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; }
+.subhead { margin: 8px 0 2px; color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; }
 
-.row { display: flex; align-items: center; gap: 8px; padding: 3px 0; cursor: pointer; }
+.row { display: flex; align-items: center; gap: 9px; padding: 4px 0; cursor: pointer; line-height: 1.25; }
 .row.disabled { color: var(--muted); cursor: not-allowed; }
-.row input { accent-color: var(--accent); margin: 0; }
+.row input { accent-color: var(--accent); margin: 0; width: 16px; height: 16px; flex: none; }
 
-.swatch { display: inline-block; flex: none; width: 12px; height: 12px; background: var(--c); }
-.swatch-circle { border-radius: 50%; width: 9px; height: 9px; margin: 0 1.5px; }
-.swatch-line { height: 2px; }
-.swatch-fill { border-radius: 2px; }
+/* ---------- pastilles (panneau et légende) ---------- */
+.swatch-box { display: inline-flex; width: 20px; justify-content: center; flex: none; }
+.swatch { display: inline-block; flex: none; background: var(--c); }
+.swatch-fill { width: 16px; height: 13px; border-radius: 2px; border: 1px solid rgba(255, 255, 255, 0.25); }
+.swatch-circle { width: 12px; height: 12px; border-radius: 50%; border: 1px solid #000; }
+.swatch-line { width: 18px; height: 3px; }
+.swatch-line.dashed { background: repeating-linear-gradient(90deg, var(--c) 0 5px, transparent 5px 8px); }
+.swatch-icon { width: 20px; height: 20px; flex: none; }
 
-.sublegend { display: flex; flex-wrap: wrap; gap: 4px 10px; padding: 0 0 4px 22px; color: var(--muted); font-size: 11px; }
-.sublegend > span { display: inline-flex; align-items: center; gap: 4px; }
-
-/* ---------- légende ---------- */
+/* ---------- légende (haut droite) ---------- */
 .legend {
-  position: absolute; bottom: 30px; left: 10px; z-index: 2; min-width: 190px; max-width: 280px;
-  padding: 10px 12px; background: var(--bg); border: 1px solid var(--line); border-radius: 8px; font-size: 12px;
+  position: absolute; top: 12px; right: 12px; z-index: 2; width: 290px; max-height: calc(100% - 150px); overflow: auto;
+  padding: 10px 14px 12px; background: var(--bg); border: 1px solid var(--line); border-radius: 10px;
+  font-size: 14px; box-shadow: 0 4px 18px rgba(0, 0, 0, 0.5);
 }
-.legend-title { font-weight: 600; margin-bottom: 6px; }
-.legend-row { display: flex; align-items: center; gap: 8px; padding: 1px 0; }
-.legend-note { margin-top: 6px; color: var(--muted); font-size: 11px; }
+.legend-head { font-weight: 700; font-size: 15px; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
+.legend section { padding: 6px 0; border-top: 1px solid var(--line); }
+.legend section:first-of-type { border-top: 0; }
+.legend-title { font-weight: 600; margin-bottom: 4px; color: var(--accent); }
+.legend-row { display: flex; align-items: center; gap: 9px; padding: 2px 0; }
+.legend-note { margin-top: 5px; color: var(--muted); font-size: 12px; }
 
 /* ---------- fenêtres d'information ---------- */
-.maplibregl-popup-content { background: var(--bg); color: var(--fg); border: 1px solid var(--line); font-size: 12px; padding: 10px 12px; }
+.maplibregl-popup-content { background: var(--bg); color: var(--fg); border: 1px solid var(--line); font-size: 14px; padding: 11px 14px; line-height: 1.4; }
 .maplibregl-popup-tip { border-top-color: var(--bg) !important; border-bottom-color: var(--bg) !important; }
-.maplibregl-popup-close-button { color: var(--muted); }
-.pt { font-weight: 600; margin-bottom: 4px; }
+.maplibregl-popup-close-button { color: var(--muted); font-size: 18px; }
+.pt { font-weight: 700; font-size: 15px; margin-bottom: 5px; }
 .pl { color: var(--muted); }
 
 .error {
@@ -64,7 +70,7 @@ html, body { margin: 0; height: 100%; background: #0b0d12; color: var(--fg); }
   padding: 14px 18px; background: #3a1418; border: 1px solid #e63946; border-radius: 8px; max-width: 80%;
 }
 
-@media (max-width: 600px) {
-  .panel { width: calc(100% - 70px); max-height: 60%; }
-  .legend { bottom: 24px; max-width: calc(100% - 20px); }
+@media (max-width: 700px) {
+  .panel { width: calc(100% - 24px); max-height: 45%; }
+  .legend { top: auto; bottom: 40px; right: 12px; width: calc(100% - 90px); max-height: 30%; }
 }
