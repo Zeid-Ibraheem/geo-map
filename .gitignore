@@ -1,0 +1,7 @@
+# Généré par scripts/build_data.py
+/web/data/
+/web/vendor/
+/.cache/
+
+__pycache__/
+*.pyc

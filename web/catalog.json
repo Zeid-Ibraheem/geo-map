@@ -1,0 +1,278 @@
+{
+  "map": {
+    "maplibre_version": "5.24.0",
+    "center": [20, 25],
+    "zoom": 1.6,
+    "projection": "globe",
+    "glyphs": "https://demotiles.maplibre.org/font/{fontstack}/{range}.pbf",
+    "font": "Open Sans Semibold",
+    "colors": {
+      "ocean": "#0b0d12",
+      "land": "#1b1e26",
+      "border": "#4a4f5c",
+      "label": "#9aa0ad",
+      "no_data": "#2a2d35"
+    },
+    "palette": ["#2b2140", "#4b2a5e", "#7a2f6b", "#ad3a63", "#d9584a", "#f08a3a", "#f9c74f"]
+  },
+
+  "countries": {
+    "url": "https://raw.githubusercontent.com/nvkelso/natural-earth-vector/ca96624a56bd078437bca8184e78163e5039ad19/geojson/ne_50m_admin_0_countries.geojson",
+    "id_props": ["ISO_A3_EH", "ADM0_A3"],
+    "name_props": ["NAME_FR", "NAME"],
+    "precision": 3,
+    "attribution": "Natural Earth"
+  },
+
+  "bases": [
+    { "id": "dark", "title": "Sombre", "default": true },
+    {
+      "id": "relief",
+      "title": "Relief et fonds marins (NASA)",
+      "tiles": ["https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/BlueMarble_ShadedRelief_Bathymetry/default//GoogleMapsCompatible_Level8/{z}/{y}/{x}.jpeg"],
+      "maxzoom": 8,
+      "attribution": "NASA GIBS"
+    },
+    {
+      "id": "night",
+      "title": "Lumières nocturnes (NASA)",
+      "tiles": ["https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/VIIRS_Black_Marble/default/2016-01-01/GoogleMapsCompatible_Level8/{z}/{y}/{x}.png"],
+      "maxzoom": 8,
+      "attribution": "NASA GIBS – Black Marble"
+    }
+  ],
+
+  "indicators": [
+    { "id": "gdp", "title": "PIB", "provider": "worldbank", "code": "NY.GDP.MKTP.CD", "format": "compact", "unit": "$", "attribution": "Banque mondiale" },
+    { "id": "gdp_pc", "title": "PIB par habitant", "provider": "worldbank", "code": "NY.GDP.PCAP.CD", "format": "integer", "unit": "$", "attribution": "Banque mondiale" },
+    { "id": "density", "title": "Densité de population", "provider": "worldbank", "code": "EN.POP.DNST", "format": "integer", "unit": "hab./km²", "attribution": "Banque mondiale" },
+    { "id": "debt", "title": "Dette publique (% du PIB)", "provider": "imf", "code": "GGXWDG_NGDP", "format": "decimal", "unit": "%", "attribution": "FMI" },
+    { "id": "milex", "title": "Dépenses militaires (% du PIB)", "provider": "worldbank", "code": "MS.MIL.XPND.GD.ZS", "format": "decimal", "unit": "%", "attribution": "Banque mondiale / SIPRI" },
+    { "id": "troops", "title": "Effectifs militaires", "provider": "worldbank", "code": "MS.MIL.TOTL.P1", "format": "compact", "unit": "", "attribution": "Banque mondiale / IISS" },
+    { "id": "warheads", "title": "Têtes nucléaires (inventaire total)", "provider": "file", "path": "static-data/nuclear-warheads-sipri-2026.json", "field": "total_inventory", "format": "integer", "unit": "", "attribution": "SIPRI Yearbook 2026" },
+    { "id": "warheads_deployed", "title": "Têtes nucléaires déployées", "provider": "file", "path": "static-data/nuclear-warheads-sipri-2026.json", "field": "deployed", "format": "integer", "unit": "", "attribution": "SIPRI Yearbook 2026" }
+  ],
+
+  "overlays": [
+    {
+      "id": "capitals",
+      "title": "Capitales",
+      "group": "Pays",
+      "source": {
+        "url": "https://raw.githubusercontent.com/nvkelso/natural-earth-vector/ca96624a56bd078437bca8184e78163e5039ad19/geojson/ne_10m_populated_places_simple.geojson",
+        "keep": { "featurecla": ["Admin-0 capital", "Admin-0 capital alt"] },
+        "props": ["name", "adm0name", "pop_max"]
+      },
+      "style": { "type": "circle", "color": "#f9c74f", "radius": 3.5 },
+      "popup": { "title": "name", "fields": [{ "label": "Pays", "prop": "adm0name" }, { "label": "Population (agglo.)", "prop": "pop_max", "format": "integer" }] },
+      "attribution": "Natural Earth",
+      "visible": true
+    },
+    {
+      "id": "disputed",
+      "title": "Territoires disputés",
+      "group": "Pays",
+      "source": {
+        "url": "https://raw.githubusercontent.com/nvkelso/natural-earth-vector/ca96624a56bd078437bca8184e78163e5039ad19/geojson/ne_10m_admin_0_disputed_areas.geojson",
+        "props": ["BRK_NAME", "NAME_FR", "NOTE_BRK", "TYPE"],
+        "precision": 3
+      },
+      "style": { "type": "fill", "color": "#e63946", "opacity": 0.35, "outline": "#ff6b6b" },
+      "popup": { "title": "NAME_FR", "fields": [{ "label": "Statut", "prop": "NOTE_BRK" }, { "label": "Type", "prop": "TYPE" }] },
+      "attribution": "Natural Earth"
+    },
+    {
+      "id": "timezones",
+      "title": "Fuseaux horaires",
+      "group": "Pays",
+      "source": {
+        "url": "https://raw.githubusercontent.com/nvkelso/natural-earth-vector/ca96624a56bd078437bca8184e78163e5039ad19/geojson/ne_10m_time_zones.geojson",
+        "props": ["time_zone", "places"],
+        "precision": 3,
+        "simplify": 0.01
+      },
+      "style": { "type": "line", "color": "#6c757d", "width": 0.8, "dash": [2, 2] },
+      "popup": { "title": "time_zone", "fields": [{ "label": "Lieux", "prop": "places" }] },
+      "attribution": "Natural Earth"
+    },
+
+    {
+      "id": "plates",
+      "title": "Plaques tectoniques",
+      "group": "Géographie",
+      "source": {
+        "url": "https://raw.githubusercontent.com/fraxen/tectonicplates/339b0c56563c118307b1f4542703047f5f698fae/GeoJSON/PB2002_boundaries.json",
+        "props": ["Name", "Type"],
+        "precision": 3
+      },
+      "style": { "type": "line", "color": "#ff8c42", "width": 1.2 },
+      "popup": { "title": "Name", "fields": [] },
+      "attribution": "PB2002 (Bird 2003) via fraxen/tectonicplates"
+    },
+    {
+      "id": "rivers",
+      "title": "Grands fleuves",
+      "group": "Géographie",
+      "source": {
+        "url": "https://raw.githubusercontent.com/nvkelso/natural-earth-vector/ca96624a56bd078437bca8184e78163e5039ad19/geojson/ne_50m_rivers_lake_centerlines.geojson",
+        "props": ["name"],
+        "precision": 3
+      },
+      "style": { "type": "line", "color": "#4ea8de", "width": 1 },
+      "popup": { "title": "name", "fields": [] },
+      "attribution": "Natural Earth"
+    },
+
+    {
+      "id": "nuclear_plants",
+      "title": "Centrales nucléaires",
+      "group": "Énergie",
+      "source": {
+        "url": "https://raw.githubusercontent.com/cristianst85/GeoNuclearData/1bc8b4ac106af236902385b87e46c540b4864815/data/json/denormalized/nuclear_power_plants.json",
+        "format": "json-points",
+        "lat": "Latitude",
+        "lon": "Longitude",
+        "keep": { "Status": ["Operational", "Under Construction", "Suspended Operation"] },
+        "props": ["Name", "Country", "Status", "ReactorType", "Capacity", "OperationalFrom"]
+      },
+      "style": {
+        "type": "circle",
+        "color": { "by": "Status", "values": { "Operational": "#80ed99", "Under Construction": "#f9c74f", "Suspended Operation": "#adb5bd" }, "default": "#adb5bd" },
+        "radius": 4
+      },
+      "popup": {
+        "title": "Name",
+        "fields": [
+          { "label": "Pays", "prop": "Country" },
+          { "label": "Statut", "prop": "Status" },
+          { "label": "Type de réacteur", "prop": "ReactorType" },
+          { "label": "Puissance (MW)", "prop": "Capacity", "format": "integer" },
+          { "label": "En service depuis", "prop": "OperationalFrom" }
+        ]
+      },
+      "legend": { "Operational": "En service", "Under Construction": "En construction", "Suspended Operation": "Suspendue" },
+      "attribution": "GeoNuclearData (WNA/IAEA, mise à jour 2024)"
+    },
+
+    {
+      "id": "airports",
+      "title": "Aéroports (militaires en rouge)",
+      "group": "Transports",
+      "source": {
+        "url": "https://raw.githubusercontent.com/nvkelso/natural-earth-vector/ca96624a56bd078437bca8184e78163e5039ad19/geojson/ne_10m_airports.geojson",
+        "props": ["name", "type", "iata_code"]
+      },
+      "style": {
+        "type": "circle",
+        "color": {
+          "by": "type",
+          "values": { "mid and military": "#e63946", "major and military": "#e63946", "military mid": "#e63946", "military major": "#e63946", "military": "#e63946", "spaceport": "#c77dff" },
+          "default": "#90e0ef"
+        },
+        "radius": 3
+      },
+      "popup": { "title": "name", "fields": [{ "label": "Type", "prop": "type" }, { "label": "Code IATA", "prop": "iata_code" }] },
+      "attribution": "Natural Earth"
+    },
+    {
+      "id": "ports",
+      "title": "Ports",
+      "group": "Transports",
+      "source": {
+        "url": "https://raw.githubusercontent.com/nvkelso/natural-earth-vector/ca96624a56bd078437bca8184e78163e5039ad19/geojson/ne_10m_ports.geojson",
+        "props": ["name"]
+      },
+      "style": { "type": "circle", "color": "#48cae4", "radius": 2.5 },
+      "popup": { "title": "name", "fields": [] },
+      "attribution": "Natural Earth"
+    },
+    {
+      "id": "railroads",
+      "title": "Voies ferrées",
+      "group": "Transports",
+      "source": {
+        "url": "https://raw.githubusercontent.com/nvkelso/natural-earth-vector/ca96624a56bd078437bca8184e78163e5039ad19/geojson/ne_10m_railroads.geojson",
+        "props": ["electric", "mult_track"],
+        "precision": 3,
+        "simplify": 0.01
+      },
+      "style": { "type": "line", "color": "#b08968", "width": 0.7 },
+      "popup": null,
+      "attribution": "Natural Earth"
+    },
+
+    {
+      "id": "borders_1914",
+      "title": "Frontières en 1914",
+      "group": "Histoire",
+      "source": {
+        "url": "https://raw.githubusercontent.com/aourednik/historical-basemaps/4b5039e50d8d2464b065bd76ad6086cd4597108d/geojson/world_1914.geojson",
+        "props": ["NAME", "SUBJECTO"],
+        "precision": 3
+      },
+      "style": { "type": "fill", "color": "#c9a227", "opacity": 0.08, "outline": "#c9a227" },
+      "popup": { "title": "NAME", "fields": [{ "label": "Dépend de", "prop": "SUBJECTO" }] },
+      "attribution": "historical-basemaps (A. Ourednik)"
+    },
+    {
+      "id": "borders_1938",
+      "title": "Frontières en 1938",
+      "group": "Histoire",
+      "source": {
+        "url": "https://raw.githubusercontent.com/aourednik/historical-basemaps/4b5039e50d8d2464b065bd76ad6086cd4597108d/geojson/world_1938.geojson",
+        "props": ["NAME", "SUBJECTO"],
+        "precision": 3
+      },
+      "style": { "type": "fill", "color": "#c9a227", "opacity": 0.08, "outline": "#c9a227" },
+      "popup": { "title": "NAME", "fields": [{ "label": "Dépend de", "prop": "SUBJECTO" }] },
+      "attribution": "historical-basemaps (A. Ourednik)"
+    },
+    {
+      "id": "borders_1945",
+      "title": "Frontières en 1945",
+      "group": "Histoire",
+      "source": {
+        "url": "https://raw.githubusercontent.com/aourednik/historical-basemaps/4b5039e50d8d2464b065bd76ad6086cd4597108d/geojson/world_1945.geojson",
+        "props": ["NAME", "SUBJECTO"],
+        "precision": 3
+      },
+      "style": { "type": "fill", "color": "#c9a227", "opacity": 0.08, "outline": "#c9a227" },
+      "popup": { "title": "NAME", "fields": [{ "label": "Dépend de", "prop": "SUBJECTO" }] },
+      "attribution": "historical-basemaps (A. Ourednik)"
+    },
+    {
+      "id": "borders_1960",
+      "title": "Frontières en 1960",
+      "group": "Histoire",
+      "source": {
+        "url": "https://raw.githubusercontent.com/aourednik/historical-basemaps/4b5039e50d8d2464b065bd76ad6086cd4597108d/geojson/world_1960.geojson",
+        "props": ["NAME", "SUBJECTO"],
+        "precision": 3
+      },
+      "style": { "type": "fill", "color": "#c9a227", "opacity": 0.08, "outline": "#c9a227" },
+      "popup": { "title": "NAME", "fields": [{ "label": "Dépend de", "prop": "SUBJECTO" }] },
+      "attribution": "historical-basemaps (A. Ourednik)"
+    },
+
+    {
+      "id": "earthquakes",
+      "title": "Séismes M4.5+ (7 derniers jours)",
+      "group": "En direct",
+      "live": {
+        "url": "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/4.5_week.geojson",
+        "refresh_s": 300
+      },
+      "style": {
+        "type": "circle",
+        "color": "#ff006e",
+        "radius": { "by": "mag", "stops": [[4.5, 3], [6, 7], [8, 16]] },
+        "opacity": 0.7
+      },
+      "popup": {
+        "title": "place",
+        "fields": [{ "label": "Magnitude", "prop": "mag", "format": "decimal" }, { "label": "Date", "prop": "time", "format": "datetime" }]
+      },
+      "attribution": "USGS"
+    }
+  ]
+}

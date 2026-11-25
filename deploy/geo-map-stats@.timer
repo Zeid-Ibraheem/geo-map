@@ -1,0 +1,10 @@
+# Usage : sudo systemctl enable --now geo-map-stats@NOM_UTILISATEUR.timer
+[Unit]
+Description=Mise à jour hebdomadaire des indicateurs de la carte
+
+[Timer]
+OnCalendar=Mon 04:17
+Persistent=true
+
+[Install]
+WantedBy=timers.target

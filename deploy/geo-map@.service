@@ -1,0 +1,16 @@
+# Usage : sudo systemctl enable --now geo-map@NOM_UTILISATEUR.service
+[Unit]
+Description=Carte géopolitique (site statique) pour %i
+After=network-online.target tailscaled.service
+Wants=network-online.target
+
+[Service]
+EnvironmentFile=/etc/geo-map.env
+User=%i
+ExecStart=/usr/bin/python3 -m http.server ${GEO_MAP_PORT} --bind ${GEO_MAP_BIND} --directory ${GEO_MAP_DIR}/web
+NoNewPrivileges=yes
+ProtectSystem=strict
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

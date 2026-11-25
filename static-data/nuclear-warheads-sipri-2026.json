@@ -1,0 +1,28 @@
+{
+  "title": "Forces nucléaires mondiales, janvier 2026",
+  "source": "SIPRI Yearbook 2026, communiqué de presse du 8 juin 2026",
+  "url": "https://www.sipri.org/sites/default/files/WNF%202026%20PR%20FRE.pdf",
+  "year": 2026,
+  "notes": [
+    "Estimations approximatives selon le SIPRI.",
+    "France : la hausse de l'inventaire total vient de nouvelles informations sur les têtes retirées du service, pas d'une hausse réelle.",
+    "Corée du Nord : forte incertitude selon le SIPRI."
+  ],
+  "fields": {
+    "deployed": "Têtes déployées (sur missiles ou sur des bases)",
+    "stored": "Têtes stockées",
+    "stockpile": "Stock militaire (déployées + stockées)",
+    "total_inventory": "Inventaire total (stock militaire + têtes retirées en attente de démantèlement)"
+  },
+  "values": {
+    "USA": { "deployed": 1770, "stored": 1930, "stockpile": 3700, "total_inventory": 5042 },
+    "RUS": { "deployed": 1796, "stored": 2604, "stockpile": 4400, "total_inventory": 5420 },
+    "GBR": { "deployed": 120,  "stored": 105,  "stockpile": 225,  "total_inventory": 225 },
+    "FRA": { "deployed": 280,  "stored": 10,   "stockpile": 290,  "total_inventory": 370 },
+    "CHN": { "deployed": 34,   "stored": 586,  "stockpile": 620,  "total_inventory": 620 },
+    "IND": { "deployed": 12,   "stored": 178,  "stockpile": 190,  "total_inventory": 190 },
+    "PAK": { "deployed": 0,    "stored": 170,  "stockpile": 170,  "total_inventory": 170 },
+    "PRK": { "deployed": 0,    "stored": 60,   "stockpile": 60,   "total_inventory": 60 },
+    "ISR": { "deployed": 0,    "stored": 90,   "stockpile": 90,   "total_inventory": 90 }
+  }
+}

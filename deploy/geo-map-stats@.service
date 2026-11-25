@@ -1,0 +1,11 @@
+# Lancé par geo-map-stats@NOM_UTILISATEUR.timer
+[Unit]
+Description=Mise à jour des indicateurs de la carte (PIB, dette…)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+EnvironmentFile=/etc/geo-map.env
+User=%i
+ExecStart=/usr/bin/python3 ${GEO_MAP_DIR}/scripts/build_data.py --only stats --refresh
