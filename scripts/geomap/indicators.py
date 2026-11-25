@@ -31,7 +31,14 @@ def parse_worldbank(payload) -> Values:
 
 
 def imf_url(code: str) -> str:
-    return f"https://www.imf.org/external/datamapper/api/v1/{code}"
+    # la v1 renvoie 404 depuis fin 2026 ; la v2 garde le même format
+    return f"https://www.imf.org/external/datamapper/api/v2/{code}"
+
+
+def imf_max_year(payload, code: str, today: date) -> int:
+    """Dernière année réelle : celle avant la première année de projection annoncée par le FMI."""
+    projection = (payload.get("indicators") or {}).get(code, {}).get("projection-year")
+    return int(projection) - 1 if projection else today.year - 1
 
 
 def parse_imf(payload, code: str, max_year: int) -> Values:
@@ -39,6 +46,8 @@ def parse_imf(payload, code: str, max_year: int) -> Values:
     series = payload["values"][code]
     out: Values = {}
     for iso3, by_year in series.items():
+        if not iso3 or not isinstance(by_year, dict):
+            continue  # la v2 contient une entrée vide ("": null)
         years = [int(y) for y, v in by_year.items() if v is not None and int(y) <= max_year]
         if years:
             y = max(years)
@@ -62,9 +71,9 @@ def load_indicator(spec: dict, *, get_json: Callable[[str], object], repo_root: 
     if provider == "worldbank":
         return parse_worldbank(get_json(worldbank_url(spec["code"])))
     if provider == "imf":
-        # année passée : l'année en cours est encore une estimation au moment de la publication
-        max_year = (today or date.today()).year - 1
-        return parse_imf(get_json(imf_url(spec["code"])), spec["code"], max_year)
+        payload = get_json(imf_url(spec["code"]))
+        max_year = imf_max_year(payload, spec["code"], today or date.today())
+        return parse_imf(payload, spec["code"], max_year)
     if provider == "file":
         data = json.loads((repo_root / spec["path"]).read_text(encoding="utf-8"))
         return parse_file(data, spec["field"])

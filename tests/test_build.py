@@ -68,6 +68,16 @@ class IndicatorTests(unittest.TestCase):
         payload = {"values": {"GGXWDG_NGDP": {"FRA": {"2024": 113.0, "2025": 116.0, "2030": 125.0}}}}
         self.assertEqual(parse_imf(payload, "GGXWDG_NGDP", 2025), {"FRA": {"v": 116.0, "y": 2025}})
 
+    def test_imf_v2_format(self):
+        # format réel de l'API v2 : année de projection annoncée + entrée vide parasite
+        payload = {
+            "indicators": {"GGXWDG_NGDP": {"projection-year": 2026}},
+            "values": {"GGXWDG_NGDP": {"FRA": {"2023": 109.5, "2024": 112.6, "2025": 115.5, "2026": 118.5}, "": None}},
+        }
+        values = load_indicator({"provider": "imf", "code": "GGXWDG_NGDP"}, get_json=lambda url: payload,
+                                repo_root=REPO, today=date(2026, 11, 21))
+        self.assertEqual(values, {"FRA": {"v": 115.5, "y": 2025}})
+
     def test_sipri_file(self):
         spec = {"provider": "file", "path": "static-data/nuclear-warheads-sipri-2026.json", "field": "total_inventory"}
         values = load_indicator(spec, get_json=None, repo_root=REPO, today=date(2026, 11, 21))
